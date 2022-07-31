@@ -21,11 +21,10 @@
 <input type="submit" name="submit" value="Sign In" id="send">
 <br>
 <br>
-<a href="s_reg.php">Sign Up</a> 
 </p></form>
 <br>
 <?php
-    if (empty($_SESSION['login']) or empty($_SESSION['ID'])) { echo "Logged as guest."; }
+    if (empty($_SESSION['login']) or empty($_SESSION['ID'])) { echo "Logged as guest. <br><a href='s_reg.html'>Sign Up</a>"; }
     else { echo "Logged as ".$_SESSION['login']."<br><a  href='index.html'>Admin panel</a>";
     echo "<br><a href='exit.php'>Sign Out.</a>"; }
 ?>
