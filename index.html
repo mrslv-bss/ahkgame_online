@@ -1,0 +1,69 @@
+﻿<?php include("connect.php"); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Admin Panel (AHk Game)</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
+<script type="text/javascript">
+$(function() {
+$("#send").click(function(){
+  var playername = $("#playername").val();
+  var message = $("#message").val();		
+  var date = $("#date").val();			
+  $.ajax({
+  type: "POST",
+  url: "sendMessage.php",
+  data: {"playername": playername, "message": message, "date": date},
+  cache: false,						
+  success: function(response){
+  var messageResp = new Array('Command sent.','Command hasnt been sended, DB issue.','Fill in action field.');
+  var resultStat = messageResp[Number(response)];
+  if(response == 0){
+  $("#playername").val("");
+  $("#message").val("");
+  $("#date").val("");
+  $("#commentBlock").append("<div class='comment'>Player Name: <strong>"+playername+"</strong><br><i>"+message+"</i><i>"+date+"</i></div>");}
+  $("#resp").text(resultStat).show().delay(1500).fadeOut(800);}});return false;});});
+</script>
+</head>
+
+<body>
+<h1>GAME CONSOLE</h1>
+<hr />
+<form action="sendMessage.php" method="post" name="form">
+<p>Player Name:<br> <input name="playername" type="text" id="playername"></p>
+<p>Action:<br><input name="message" rows="1" cols="10" id="message"></p>
+<input name="js" type="hidden" value="no" id="js">
+<p><input name="button" type="submit" value="Send" id="send"> <span id="resp"></span></p>
+</form>
+
+<table>
+  <tbody>
+<colgroup style="background-color: #ddd;">
+    <col>
+    <col style="background-color: #ccc;">
+    <col>
+  </colgroup>
+    <tr>
+      <th colspan="3">Action logs</th>
+    </tr>
+    <tr>
+      <th>Player Name</th>
+      <th>Action</th>
+      <th>Time</th>
+    </tr>
+
+<?php
+    $result = mysqli_query($db, "SELECT * FROM actionlogs ORDER BY id DESC LIMIT 20");
+    $comment = mysqli_fetch_array($result);
+    do{ echo "<tr> <td rowspan='1'>".$comment['playername']."	</td> <td rowspan='1'>".$comment['message']."</td> <td rowspan='1'>".$comment['date']."	</td></tr>";
+    }while($comment = mysqli_fetch_array($result));
+?>
+
+</tbody>
+</table>
+
+<p style="margin:30px 0 0; text-align:center; color:#800000; font-weight:bold;">SINCE SUMMER 2018</p>
+</body>
+</html>
